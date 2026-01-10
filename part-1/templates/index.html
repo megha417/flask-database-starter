@@ -15,29 +15,28 @@
     </style>
 </head>
 <body>
-    <h1>Student List (Part 1 - Basic Database)</h1>
+    <h1>Teachers List (Part 1 - Basic Database)</h1>
 
-    <a href="/add" class="btn">+ Add Sample Student</a>
+    <a href="/add" class="btn">+ Add Sample Teacher</a>
 
-    {% if students %}
+    {% if teach %}
         <table>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Course</th>
+    
             </tr>
-            {% for student in students %}
+            {% for teacher in teach %}
             <tr>
-                <td>{{ student['id'] }}</td>
-                <td>{{ student['name'] }}</td>
-                <td>{{ student['email'] }}</td>
-                <td>{{ student['course'] }}</td>
+                <td>{{ teacher['id'] }}</td>
+                <td>{{ teacher['name'] }}</td>
+                <td>{{ teacher['email'] }}</td>
             </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p class="empty">No students yet. Click the button above to add one!</p>
+        <p class="empty">No teachers yet. Click the button above to add one!</p>
     {% endif %}
 
     <hr>

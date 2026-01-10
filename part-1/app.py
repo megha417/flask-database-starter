@@ -17,7 +17,7 @@ import sqlite3  # Built-in Python library for SQLite database
 
 app = Flask(__name__)
 
-DATABASE = 'students.db'  # Database file name (will be created automatically)
+DATABASE = 'teachers.db'  # Database file name (will be created automatically)
 
 
 # =============================================================================
@@ -35,11 +35,10 @@ def init_db():
     """Create the table if it doesn't exist"""
     conn = get_db_connection()
     conn.execute('''
-        CREATE TABLE IF NOT EXISTS students (
+        CREATE TABLE IF NOT EXISTS teachers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            course TEXT NOT NULL
+            email TEXT NOT NULL
         )
     ''')  # SQL command to create table with 4 columns
     conn.commit()  # Save changes to database
@@ -52,27 +51,31 @@ def init_db():
 
 @app.route('/')
 def index():
-    """Home page - Display all students from database"""
+
+    """Home page - Display all teachersfrom database"""
     conn = get_db_connection()  # Step 1: Connect to database
-    students = conn.execute('SELECT * FROM students').fetchall()  # Step 2: Get all rows
+    teachers = conn.execute('SELECT * FROM teachers').fetchall()  # Step 2: Get all rows
     conn.close()  # Step 3: Close connection
-    return render_template('index.html', students=students)
+    return render_template('index.html', teach=teachers)
 
 
 @app.route('/add')
-def add_sample_student():
-    """Add a sample student to database (for testing)"""
+def add_sample_teacher():
+
+    """Add a sample teachers to database (for testing)"""
     conn = get_db_connection()
     conn.execute(
-        'INSERT INTO students (name, email, course) VALUES (?, ?, ?)',
-        ('John Doe', 'john@example.com', 'Python')  # ? are placeholders (safe from SQL injection)
+
+        'INSERT INTO teachers (name, email) VALUES (?, ?)',
+        ('Bhagyashri', 'bhagyashri@example.com')  # ? are placeholders (safe from SQL injection)
     )
     conn.commit()  # Don't forget to commit!
     conn.close()
-    return 'Student added! <a href="/">Go back to home</a>'
+    return 'Teacher added! <a href="/">Go back to home</a>'
 
 
 if __name__ == '__main__':
+
     init_db()  # Create table when app starts
     app.run(debug=True)
 
