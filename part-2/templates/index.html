@@ -24,6 +24,12 @@
 <body>
     <h1>Student Management (Part 2 - Full CRUD)</h1>
 
+    <form method="GET" action="{{ url_for('index') }}" style="margin-bottom: 20px;">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search students by name" style="padding: 8px; width: 200px;">
+        <button type="submit" class="btn btn-add" style="padding: 8px 16px;">Search</button>
+        {% if search %}<a href="{{ url_for('index') }}" class="btn" style="background: #ccc; color: black;">Clear Search</a>{% endif %}
+    </form>
+
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

@@ -54,6 +54,12 @@ def add_student():
         course = request.form['course']
 
         conn = get_db_connection()
+        existing = conn.execute('SELECT id FROM students WHERE email = ?', (email,)).fetchone()
+        if existing:
+            conn.close()
+            flash('Email already exists! Please use a different email.', 'danger')
+            return render_template('add.html', name=name, email=email, course=course)
+
         conn.execute(
             'INSERT INTO students (name, email, course) VALUES (?, ?, ?)',
             (name, email, course)
@@ -73,10 +79,21 @@ def add_student():
 
 @app.route('/')
 def index():
+    search = request.args.get('search', '')  # Get search term from URL, default to empty
     conn = get_db_connection()
-    students = conn.execute('SELECT * FROM students ORDER BY id DESC').fetchall()  # Newest first
+    
+    if search:
+        # Filter students by name (partial match)
+        students = conn.execute(
+            'SELECT * FROM students WHERE name LIKE ? ORDER BY id DESC',
+            ('%' + search + '%',)  # Add wildcards for partial matching
+        ).fetchall()
+    else:
+        # Show all students if no search
+        students = conn.execute('SELECT * FROM students ORDER BY id DESC').fetchall()
+    
     conn.close()
-    return render_template('index.html', students=students)
+    return render_template('index.html', students=students, search=search)  # Pass search term to template
 
 
 # =============================================================================
