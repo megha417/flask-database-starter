@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Query Demo - Part 3</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f0f4f8; }
+        h1, h2 { color: #2c3e50; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .query-section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .query-section h3 { color: #16a085; margin-top: 0; }
+        .code { background: #ecf0f1; padding: 8px 12px; border-radius: 4px; font-family: monospace; display: inline-block; margin: 5px 0; }
+        .result-item { background: #e8f8f5; padding: 8px; margin: 5px 0; border-left: 3px solid #16a085; }
+        .count { background: #3498db; color: white; padding: 4px 12px; border-radius: 12px; font-size: 14px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #16a085; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Query Methods Demonstration</h1>
+
+    <nav>
+        <a href="{{ url_for('index') }}">Students</a>
+        <a href="{{ url_for('courses') }}">Courses</a>
+        <a href="{{ url_for('teachers') }}">Teachers</a>
+        <a href="{{ url_for('query_demo') }}">Query Demo</a>
+    </nav>
+
+    <!-- FILTER -->
+    <div class="query-section">
+        <h3>1. filter()</h3>
+        <p class="code">
+            Student.query.filter(Student.name.like('%a%')).all()
+        </p>
+        <p><strong>Result:</strong></p>
+
+        {% for student in results['filter_students'] %}
+            <div class="result-item">{{ student.name }}</div>
+        {% else %}
+            <p>No results</p>
+        {% endfor %}
+    </div>
+
+    <!-- ORDER BY -->
+    <div class="query-section">
+        <h3>2. order_by()</h3>
+        <p class="code">
+            Student.query.order_by(Student.name).all()
+        </p>
+        <p><strong>Result:</strong></p>
+
+        {% for student in results['ordered_students'] %}
+            <div class="result-item">{{ loop.index }}. {{ student.name }}</div>
+        {% else %}
+            <p>No results</p>
+        {% endfor %}
+    </div>
+
+    <!-- LIMIT -->
+    <div class="query-section">
+        <h3>3. limit()</h3>
+        <p class="code">
+            Student.query.limit(3).all()
+        </p>
+        <p><strong>Result:</strong></p>
+
+        {% for student in results['limited_students'] %}
+            <div class="result-item">
+                {{ student.name }} (ID: {{ student.id }})
+            </div>
+        {% else %}
+            <p>No results</p>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

@@ -14,10 +14,12 @@ Prerequisites: You should know Flask basics (routes, templates, render_template)
 
 from flask import Flask, render_template
 import sqlite3  # Built-in Python library for SQLite database
+import tempfile
+import os
 
 app = Flask(__name__)
 
-DATABASE = 'teachers.db'  # Database file name (will be created automatically)
+DATABASE = os.path.join(tempfile.gettempdir(), 'students.db')  # Database file in temp directory
 
 
 # =============================================================================
@@ -35,7 +37,7 @@ def init_db():
     """Create the table if it doesn't exist"""
     conn = get_db_connection()
     conn.execute('''
-        CREATE TABLE IF NOT EXISTS teachers (
+        CREATE TABLE IF NOT EXISTS students (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT NOT NULL
@@ -52,26 +54,26 @@ def init_db():
 @app.route('/')
 def index():
 
-    """Home page - Display all teachersfrom database"""
+    """Home page - Display all students from database"""
     conn = get_db_connection()  # Step 1: Connect to database
-    teachers = conn.execute('SELECT * FROM teachers').fetchall()  # Step 2: Get all rows
+    students = conn.execute('SELECT * FROM students').fetchall()  # Step 2: Get all rows
     conn.close()  # Step 3: Close connection
-    return render_template('index.html', teach=teachers)
+    return render_template('index.html', students=students)
 
 
 @app.route('/add')
-def add_sample_teacher():
+def add_sample_student():
 
-    """Add a sample teachers to database (for testing)"""
+    """Add a sample student to database (for testing)"""
     conn = get_db_connection()
     conn.execute(
 
-        'INSERT INTO teachers (name, email) VALUES (?, ?)',
-        ('Bhagyashri', 'bhagyashri@example.com')  # ? are placeholders (safe from SQL injection)
+        'INSERT INTO students (name, email) VALUES (?, ?)',
+        ('John Doe', 'john@example.com')  # Change this name and email to add different students!
     )
     conn.commit()  # Don't forget to commit!
     conn.close()
-    return 'Teacher added! <a href="/">Go back to home</a>'
+    return 'Student added! <a href="/">Go back to home</a>'
 
 
 if __name__ == '__main__':

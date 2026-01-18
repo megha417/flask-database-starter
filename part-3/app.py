@@ -32,11 +32,27 @@ db = SQLAlchemy(app)  # Initialize SQLAlchemy with app
 # MODELS (Python Classes = Database Tables)
 # =============================================================================
 
+class Teacher(db.Model):
+    """Teacher model - has many courses"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    subject_specialty = db.Column(db.String(100))  # e.g., "Computer Science"
+    
+    # Relationship: One Teacher has Many Courses
+    courses = db.relationship('Course', backref='teacher', lazy=True)
+    
+    def __repr__(self):
+        return f'<Teacher {self.name}>'
+
+
 class Course(db.Model):  # Course table
     id = db.Column(db.Integer, primary_key=True)  # Auto-increment ID
     name = db.Column(db.String(100), nullable=False)  # Course name
     description = db.Column(db.Text)  # Optional description
 
+    # Foreign Key: Links course to a teacher
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=True)
     # Relationship: One Course has Many Students
     students = db.relationship('Student', backref='course', lazy=True)
 
@@ -128,15 +144,94 @@ def add_course():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form.get('description', '')  # Optional field
+        teacher_id = request.form.get('teacher_id')
+        teacher_id = int(teacher_id) if teacher_id else None
+        new_course = Course(
+            name=name,
+            description=description,
+            teacher_id=teacher_id
+        )
 
-        new_course = Course(name=name, description=description)
         db.session.add(new_course)
         db.session.commit()
 
         flash('Course added!', 'success')
         return redirect(url_for('courses'))
+    
+    teachers = Teacher.query.all()  # NEW: Get teachers for dropdown
+    return render_template('add_course.html', teachers=teachers)
 
-    return render_template('add_course.html')
+
+@app.route('/teachers')
+def teachers():
+    """Display all teachers"""
+    all_teachers = Teacher.query.all()
+    return render_template('teachers.html', teachers=all_teachers)
+
+
+@app.route('/add-teacher', methods=['GET', 'POST'])
+def add_teacher():
+    """Add a new teacher"""
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        subject_specialty = request.form.get('subject_specialty', '')
+
+        new_teacher = Teacher(name=name, email=email, subject_specialty=subject_specialty)
+        db.session.add(new_teacher)
+        db.session.commit()
+
+        flash('Teacher added successfully!', 'success')
+        return redirect(url_for('teachers'))
+
+    return render_template('add_teacher.html')
+
+@app.route('/edit-teacher/<int:id>', methods=['GET', 'POST'])
+def edit_teacher(id):
+    teacher = Teacher.query.get_or_404(id)
+
+    if request.method == 'POST':
+        teacher.name = request.form['name']
+        teacher.email = request.form['email']
+        teacher.subject_specialty = request.form.get('subject_specialty', '')
+
+        db.session.commit()
+        flash('Teacher updated!', 'success')
+        return redirect(url_for('teachers'))
+
+    return render_template('edit_teacher.html', teacher=teacher)
+
+@app.route('/delete-teacher/<int:id>')
+def delete_teacher(id):
+    teacher = Teacher.query.get_or_404(id)
+
+    db.session.delete(teacher)
+    db.session.commit()
+
+    flash('Teacher deleted!', 'danger')
+    return redirect(url_for('teachers'))
+
+
+@app.route('/query-demo')
+def query_demo():
+    """Demonstrate basic ORM query methods"""
+
+    results = {}
+
+    # 1. filter() – students whose name contains 'a'
+    results['filter_students'] = Student.query.filter(
+        Student.name.like('%a%')
+    ).all()
+
+    # 2. order_by() – students sorted by name (A → Z)
+    results['ordered_students'] = Student.query.order_by(
+        Student.name
+    ).all()
+
+    # 3. limit() – first 3 students
+    results['limited_students'] = Student.query.limit(3).all()
+
+    return render_template('query_demo.html', results=results)
 
 
 # =============================================================================
@@ -148,12 +243,24 @@ def init_db():
     with app.app_context():
         db.create_all()  # Create all tables based on models
 
+        # Add sample teachers if none exist
+        if Teacher.query.count() == 0:
+            sample_teachers = [
+                Teacher(name='Dr. Duryodhan', email='jathar@school.com', subject_specialty='Computer Science'),
+                Teacher(name='Prof. Prachi Patekar', email='prachi@school.com', subject_specialty='Data Science'),
+                Teacher(name='Ms. Shruti Bhate', email='shruti@school.com', subject_specialty='Web Development'),
+            ]
+            db.session.add_all(sample_teachers)
+            db.session.commit()
+            print('Sample teachers added!')
+
         # Add sample courses if none exist
         if Course.query.count() == 0:
+            teachers = Teacher.query.all()
             sample_courses = [
-                Course(name='Python Basics', description='Learn Python programming fundamentals'),
-                Course(name='Web Development', description='HTML, CSS, JavaScript and Flask'),
-                Course(name='Data Science', description='Data analysis with Python'),
+                Course(name='Python Basics', description='Learn Python programming fundamentals',teacher_id=teachers[0].id),
+                Course(name='Web Development', description='HTML, CSS, JavaScript and Flask',teacher_id=teachers[2].id),
+                Course(name='Data Science', description='Data analysis with Python',teacher_id=teachers[1].id),
             ]
             db.session.add_all(sample_courses)  # Add multiple at once
             db.session.commit()
@@ -198,7 +305,12 @@ if __name__ == '__main__':
 # EXERCISE:
 # =============================================================================
 #
-# 1. Add a `Teacher` model with a relationship to Course
+# 1. Add a `Teacher` model with a relationship to Course 
+# (have one Course can be taught by many Teachers and one Teacher can only teach only one Course)
+# In other words, create new Teacher model exactly like Student with all others things same 
+# (relationship between the two, frontend page for teacher list, add new teacher, backend routes for add new teacher, edit teacher, delete teacher)
+# Additional exercise - display list of students with course name and teacher name (taken from the course name) and vice versa
+
 # 2. Try different query methods: `filter()`, `order_by()`, `limit()`
 #
 # =============================================================================
