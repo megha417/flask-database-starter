@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Product</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #6a5acd, #836fff);
+        }
+
+        .container {
+            width: 400px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #6a5acd;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+       input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        button:hover {
+            background: #1e7e34;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            text-decoration: none;
+            color: #6a5acd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Add Product</h1>
+
+<form method="POST">
+    <label>Product Name</label>
+    <input type="text" name="name" required>
+
+    <label>Quantity</label>
+    <input type="number" name="quantity" min="0" step="1" required>
+
+    <label>Price</label>
+    <input type="number" name="price" min="0" step="0.01" required>
+
+    <button type="submit">Add Product</button>
+</form>
+
+<a href="/">← Back to Inventory</a>
+
+</div>
+
+</body>
+</html>

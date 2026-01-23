@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Inventory</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #6a5acd, #836fff);
+        }
+
+        .container {
+            width: 90%;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #6a5acd;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+                .search-line {
+                    display: flex;
+            align-items: stretch;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .search-line input {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .search-line .search {
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 0;
+        }
+
+        .search-line .add {
+            padding: 12px 22px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 0 8px 8px 0;
+        }
+
+
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .search {
+            background: #6a5acd;
+        }
+
+        .add {
+            background: #28a745;
+        }
+
+        .total-box {
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f857a6, #ff5858);
+            color: white;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .no-data {
+            text-align: center;
+            font-size: 18px;
+            color: #e74c3c;
+            margin-top: 30px;
+            font-weight: bold;
+}
+
+        th {
+            background: linear-gradient(135deg, #6a5acd, #836fff);
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .qty {
+            background: #e6f2ff;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .edit {
+            background: #ffc107;
+            color: black;
+            padding: 6px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .delete {
+            background: #dc3545;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>⬢ Product Inventory</h1>
+
+<div class="top-bar">
+    <form method="GET" action="/" class="search-line">
+        <input type="text" name="q" placeholder="🔍 Search products...">
+        <button type="submit" class="btn search">Search</button>
+        <a href="/add" class="btn add">+ Add Product</a>
+    </form>
+</div>
+
+{% if products %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total Value</th>
+        <th>Action</th>
+    </tr>
+
+    {% for product in products %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.quantity }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ (product.quantity * product.price)|round(2) }}</td>
+        <td class="actions">
+         <a href="/edit/{{ product.id }}" class="btn edit">Edit</a>
+         <a href="/delete/{{ product.id }}" class="btn delete"
+         onclick="return confirm('Are you sure you want to delete {{ product.name }}?')">Delete</a>
+</td>
+
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="no-data">❌ No product found</p>
+{% endif %}
+
+
+</div>
+</body>
+</html>
