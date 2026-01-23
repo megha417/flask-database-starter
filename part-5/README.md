@@ -17,7 +17,7 @@ Switching to PostgreSQL/MySQL with environment configuration
 
 ### With SQLite (Default):
 ```bash
-cd part-7
+cd part-5
 pip install python-dotenv
 python app.py
 ```
@@ -117,7 +117,7 @@ export DATABASE_URL=postgresql://...
 
 ## Key Files
 ```
-part-7/
+part-5/
 ├── app.py              <- Database config with env vars
 ├── .env.example        <- Example environment file
 ├── templates/

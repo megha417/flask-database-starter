@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product - Part 5</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #263238; color: #eceff1; }
+        h1 { color: #80cbc4; }
+        .form-container { background: #37474f; padding: 30px; border-radius: 8px; max-width: 600px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: #80cbc4; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #455a64; border-radius: 4px; background: #263238; color: #eceff1; box-sizing: border-box; }
+        input:focus, textarea:focus { outline: none; border-color: #80cbc4; }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin: 5px 5px 5px 0; border: none; cursor: pointer; font-weight: bold; }
+        .btn-save { background: #26a69a; color: white; }
+        .btn-cancel { background: #78909c; color: white; }
+        .btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <h1>Edit Product</h1>
+
+    <div class="form-container">
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" value="{{ product.price }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" name="stock" value="{{ product.stock }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description">{{ product.description or '' }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-save">Save Changes</button>
+            <a href="{{ url_for('index') }}" class="btn btn-cancel">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>
